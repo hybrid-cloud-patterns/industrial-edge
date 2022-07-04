@@ -1,3 +1,4 @@
+{{- if not $.Values.global.deletePattern -}}
 {{- $namespace := cat $.Values.global.pattern $.Values.clusterGroup.name | replace " " "-" }}
 {{- range .Values.clusterGroup.applications }}
 apiVersion: argoproj.io/v1alpha1
@@ -5,6 +6,8 @@ kind: Application
 metadata:
   name: {{ .name }}
   namespace: {{ $namespace }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io/foreground
 spec:
   destination:
     name: in-cluster
@@ -58,4 +61,5 @@ spec:
     #  selfHeal: true
 {{- end }}
 ---
+{{- end }}
 {{- end }}
